@@ -1,5 +1,5 @@
 class ApiService {
-    constructor(baseURL = 'https://64d6fb2b2a017531bc12e71a.mockapi.io') {
+    constructor(baseURL = 'https://dummyjson.com') {
         this.baseURL = baseURL;
         this.headers = {
             'Content-Type': 'application/json',

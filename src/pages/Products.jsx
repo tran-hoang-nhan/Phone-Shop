@@ -9,22 +9,37 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   useEffect(() => {
-    actions.loadProducts();
-  }, [actions]);
+    if (state.products.length === 0) {
+      actions.loadProducts();
+    }
+  }, [actions, state.products.length]);
 
   useEffect(() => {
     if (selectedCategory === 'all') {
       setFilteredProducts(state.products);
     } else {
-      setFilteredProducts(state.products.filter(p => p.category === selectedCategory));
+      setFilteredProducts(state.products.filter(p => p.brand === selectedCategory));
     }
   }, [state.products, selectedCategory]);
 
-  const categories = ['all', ...new Set(state.products.map(p => p.category))];
+  const categories = ['all', ...new Set(state.products.map(p => p.brand))];
 
   const handleAddToCart = (product) => {
     actions.addToCart(product.id, 1, product.price);
   };
+
+  if (state.loading) {
+    return (
+      <div className="products-page">
+        <Header />
+        <main>
+          <div className="container">
+            <h1>Loading products...</h1>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="products-page">
@@ -35,7 +50,7 @@ const Products = () => {
           <div className="container">
             <h1>Products</h1>
             <nav className="breadcrumb">
-              <Link to="/">Home</Link> &gt; <span>Products</span>
+              <Link to="/">Home</Link> {'>'} <span>Products</span>
             </nav>
           </div>
         </section>
@@ -58,10 +73,10 @@ const Products = () => {
             <div className="products-grid">
               {filteredProducts.map(product => (
                 <div key={product.id} className="product-card">
-                  <img src={product.image} alt={product.name} />
+                  <img src={product.thumbnail} alt={product.title} />
                   <div className="product-info">
-                    <h3>{product.name}</h3>
-                    <p className="category">{product.category}</p>
+                    <h3>{product.title}</h3>
+                    <p className="category">{product.brand}</p>
                     <p className="price">${product.price}</p>
                     <p className="stock">Stock: {product.stock}</p>
                     <div className="product-actions">

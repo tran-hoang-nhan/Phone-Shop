@@ -7,9 +7,11 @@ const Cart = () => {
   const { state, actions } = useApp();
 
   useEffect(() => {
+    if (state.products.length === 0) {
+      actions.loadProducts();
+    }
     actions.loadCart();
-    actions.loadProducts();
-  }, []);
+  }, [state.products.length]);
 
   const getProductById = (productId) => {
     return state.products.find(p => p.id === productId);
@@ -33,6 +35,19 @@ const Cart = () => {
   const handleRemoveItem = (productId) => {
     actions.removeFromCart(productId);
   };
+
+  if (state.loading) {
+    return (
+      <div className="cart-page">
+        <Header />
+        <main>
+          <div className="container">
+            <h1>Loading...</h1>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   if (state.cart.length === 0) {
     return (
@@ -60,7 +75,7 @@ const Cart = () => {
           <div className="container">
             <h1>Shopping Cart</h1>
             <nav className="breadcrumb">
-              <Link to="/">Home</Link> &gt; <span>Cart</span>
+              <Link to="/">Home</Link> {'>'} <span>Cart</span>
             </nav>
           </div>
         </section>
@@ -74,9 +89,10 @@ const Cart = () => {
 
                 return (
                   <div key={item.productId} className="cart-item">
-                    <img src={product.image} alt={product.name} />
+                    <img src={product.thumbnail} alt={product.title} />
                     <div className="item-details">
-                      <h3>{product.name}</h3>
+                      <h3>{product.title}</h3>
+                      <p className="brand">{product.brand}</p>
                       <p className="price">${product.price}</p>
                     </div>
                     <div className="quantity-controls">
@@ -116,9 +132,9 @@ const Cart = () => {
                 <span>Total:</span>
                 <span>${calculateTotal()}</span>
               </div>
-              <button className="btn btn-primary checkout-btn">
+              <Link to="/checkout" className="btn btn-primary checkout-btn">
                 Proceed to Checkout
-              </button>
+              </Link>
               <Link to="/products" className="btn btn-secondary">
                 Continue Shopping
               </Link>

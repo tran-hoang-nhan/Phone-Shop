@@ -7,15 +7,26 @@ const Home = () => {
   const { state, actions } = useApp();
 
   useEffect(() => {
-    console.log('🏠 Home component mounted, loading data...');
-    actions.loadProducts();
+    if (state.products.length === 0) {
+      actions.loadProducts();
+    }
     actions.loadCart();
-  }, []);
+  }, [actions, state.products.length]);
 
   const featuredProducts = state.products.slice(0, 4);
-  
-  console.log('🏠 Home render - Products in state:', state.products.length);
-  console.log('🏠 Home render - Featured products:', featuredProducts.length);
+
+  if (state.loading) {
+    return (
+      <div className="home-page">
+        <Header />
+        <main>
+          <div className="container">
+            <h1>Loading...</h1>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="home-page">
@@ -38,10 +49,12 @@ const Home = () => {
             <div className="products-grid">
               {featuredProducts.map(product => (
                 <div key={product.id} className="product-card">
-                  <img src={product.image} alt={product.name} />
+                  <img src={product.thumbnail} alt={product.title} />
                   <div className="product-info">
-                    <h3>{product.name}</h3>
+                    <h3>{product.title}</h3>
+                    <p className="brand">{product.brand}</p>
                     <p className="price">${product.price}</p>
+                    <p className="rating">{product.rating} ⭐</p>
                     <Link to={`/products/${product.id}`} className="btn btn-secondary">
                       View Details
                     </Link>

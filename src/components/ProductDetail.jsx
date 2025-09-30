@@ -16,13 +16,11 @@ const ProductDetail = () => {
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        console.log('🔍 ProductDetail: Loading product', id);
         setLoading(true);
         const productData = await productService.getProductById(id);
-        console.log('✅ ProductDetail: Product loaded:', productData);
         setProduct(productData);
       } catch (error) {
-        console.error('❌ ProductDetail: Failed to load product:', error);
+        console.error('Failed to load product:', error);
       } finally {
         setLoading(false);
       }
@@ -58,18 +56,13 @@ const ProductDetail = () => {
     );
   }
 
-  const specifications = product.specifications ? Object.entries(product.specifications).map(([key, value]) => ({
-    label: key.charAt(0).toUpperCase() + key.slice(1),
-    value
-  })) : [];
-
   const handleQuantityChange = (change) => {
     setQuantity(prev => Math.max(1, Math.min(product.stock, prev + change)));
   };
 
   const handleAddToCart = () => {
     actions.addToCart(product.id, quantity, product.price);
-    alert(`Added ${quantity} ${product.name} to cart`);
+    alert(`Added ${quantity} ${product.title} to cart`);
   };
 
   return (
@@ -78,11 +71,11 @@ const ProductDetail = () => {
       <main>
         <section className="page-header">
           <div className="container">
-            <h1>{product.name}</h1>
+            <h1>{product.title}</h1>
             <nav className="breadcrumb">
-              <Link to="/">Home</Link> &gt; 
-              <Link to="/products">Products</Link> &gt; 
-              <span>{product.name}</span>
+              <Link to="/">Home</Link> {'>'} 
+              <Link to="/products">Products</Link> {'>'} 
+              <span>{product.title}</span>
             </nav>
           </div>
         </section>
@@ -92,18 +85,27 @@ const ProductDetail = () => {
             <div className="product-detail">
               <div className="product-gallery">
                 <div className="main-image">
-                  <img src={product.image} alt={product.name} />
+                  <img src={product.thumbnail} alt={product.title} />
                 </div>
+                {product.images && product.images.length > 1 && (
+                  <div className="image-thumbnails">
+                    {product.images.slice(1, 4).map((img, index) => (
+                      <img key={index} src={img} alt={`${product.title} ${index + 1}`} />
+                    ))}
+                  </div>
+                )}
               </div>
               
               <div className="product-info">
-                <h1>{product.name}</h1>
+                <h1>{product.title}</h1>
                 <div className="product-meta">
                   <span className="product-id">ID: {product.id}</span>
-                  <span className="product-category">Category: {product.category}</span>
+                  <span className="product-brand">Brand: {product.brand}</span>
+                  <span className="product-rating">Rating: {product.rating} ⭐</span>
                 </div>
                 <div className="product-price">
                   <span>${product.price}</span>
+                  <span className="discount">-{product.discountPercentage}%</span>
                 </div>
                 <div className="product-stock">
                   <span className="in-stock">In Stock</span>
@@ -113,16 +115,6 @@ const ProductDetail = () => {
                   <h3>Description</h3>
                   <p>{product.description}</p>
                 </div>
-                {product.specifications && (
-                  <div className="product-features">
-                    <h3>Key Features</h3>
-                    <ul>
-                      {Object.entries(product.specifications).map(([key, value], index) => (
-                        <li key={index}><strong>{key}:</strong> {value}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
                 <div className="product-actions">
                   <div className="quantity-selector">
                     <label>Quantity:</label>
@@ -172,12 +164,22 @@ const ProductDetail = () => {
                   <div className="tab-content">
                     <table className="specs-table">
                       <tbody>
-                        {specifications.map((spec, index) => (
-                          <tr key={index}>
-                            <th>{spec.label}</th>
-                            <td>{spec.value}</td>
-                          </tr>
-                        ))}
+                        <tr>
+                          <th>Brand</th>
+                          <td>{product.brand}</td>
+                        </tr>
+                        <tr>
+                          <th>Category</th>
+                          <td>{product.category}</td>
+                        </tr>
+                        <tr>
+                          <th>Weight</th>
+                          <td>{product.weight}g</td>
+                        </tr>
+                        <tr>
+                          <th>Dimensions</th>
+                          <td>{product.dimensions?.width} x {product.dimensions?.height} x {product.dimensions?.depth} cm</td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -186,10 +188,19 @@ const ProductDetail = () => {
                   <div className="tab-content">
                     <div className="reviews-summary">
                       <div className="average-rating">
-                        <span className="rating-value">4.8</span>
+                        <span className="rating-value">{product.rating}</span>
                         <div className="stars">⭐⭐⭐⭐⭐</div>
-                        <span className="rating-count">Based on 24 reviews</span>
+                        <span className="rating-count">Based on customer reviews</span>
                       </div>
+                      {product.reviews && product.reviews.map((review, index) => (
+                        <div key={index} className="review">
+                          <div className="review-header">
+                            <span className="reviewer">{review.reviewerName}</span>
+                            <span className="rating">{review.rating} ⭐</span>
+                          </div>
+                          <p>{review.comment}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
