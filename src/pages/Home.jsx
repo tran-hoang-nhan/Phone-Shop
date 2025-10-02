@@ -17,11 +17,12 @@ const Home = () => {
 
   if (state.loading) {
     return (
-      <div className="home-page">
+      <div className="min-h-screen bg-gray-50">
         <Header />
-        <main>
-          <div className="container">
-            <h1>Loading...</h1>
+        <main className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <h1 className="text-xl text-gray-600">Loading...</h1>
           </div>
         </main>
       </div>
@@ -29,33 +30,55 @@ const Home = () => {
   }
 
   return (
-    <div className="home-page">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
       <main>
-        <section className="hero-section">
-          <div className="container">
-            <div className="hero-content">
-              <h1>Welcome to Phone Shop</h1>
-              <p>Discover the latest smartphones and accessories</p>
-              <Link to="/products" className="btn btn-primary">Shop Now</Link>
-            </div>
+        <section className="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              Welcome to Phone Shop
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-blue-100">
+              Discover the latest smartphones and accessories
+            </p>
+            <Link 
+              to="/products" 
+              className="inline-block bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg"
+            >
+              Shop Now
+            </Link>
           </div>
         </section>
 
-        <section className="featured-products">
-          <div className="container">
-            <h2>Featured Products</h2>
-            <div className="products-grid">
+        <section className="py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">
+              Featured Products
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {featuredProducts.map(product => (
-                <div key={product.id} className="product-card">
-                  <img src={product.thumbnail} alt={product.title} />
-                  <div className="product-info">
-                    <h3>{product.title}</h3>
-                    <p className="brand">{product.brand}</p>
-                    <p className="price">${product.price}</p>
-                    <p className="rating">{product.rating} ⭐</p>
-                    <Link to={`/products/${product.id}`} className="btn btn-secondary">
+                <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                  <div className="aspect-square overflow-hidden">
+                    <img 
+                      src={product.thumbnail} 
+                      alt={product.title} 
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
+                      {product.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-2">{product.brand}</p>
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="text-2xl font-bold text-green-600">${product.price}</p>
+                      <p className="text-yellow-500 font-medium">{product.rating} ⭐</p>
+                    </div>
+                    <Link 
+                      to={`/products/${product.id}`} 
+                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium text-center block"
+                    >
                       View Details
                     </Link>
                   </div>

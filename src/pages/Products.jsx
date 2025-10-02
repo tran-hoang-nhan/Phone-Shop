@@ -30,11 +30,12 @@ const Products = () => {
 
   if (state.loading) {
     return (
-      <div className="products-page">
+      <div className="min-h-screen bg-gray-50">
         <Header />
-        <main>
-          <div className="container">
-            <h1>Loading products...</h1>
+        <main className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <h1 className="text-xl text-gray-600">Loading products...</h1>
           </div>
         </main>
       </div>
@@ -42,53 +43,76 @@ const Products = () => {
   }
 
   return (
-    <div className="products-page">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
       <main>
-        <section className="page-header">
-          <div className="container">
-            <h1>Products</h1>
-            <nav className="breadcrumb">
-              <Link to="/">Home</Link> {'>'} <span>Products</span>
+        <section className="bg-white border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Products</h1>
+            <nav className="text-sm text-gray-600">
+              <Link to="/" className="text-blue-600 hover:text-blue-800">Home</Link> 
+              <span className="mx-2">></span> 
+              <span>Products</span>
             </nav>
           </div>
         </section>
 
-        <section className="products-section">
-          <div className="container">
-            <div className="filters">
-              <h3>Categories</h3>
-              {categories.map(category => (
-                <button
-                  key={category}
-                  className={`filter-btn ${selectedCategory === category ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
-              ))}
+        <section className="py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Categories</h3>
+              <div className="flex flex-wrap gap-2">
+                {categories.map(category => (
+                  <button
+                    key={category}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      selectedCategory === category 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                    }`}
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="products-grid">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredProducts.map(product => (
-                <div key={product.id} className="product-card">
-                  <img src={product.thumbnail} alt={product.title} />
-                  <div className="product-info">
-                    <h3>{product.title}</h3>
-                    <p className="category">{product.brand}</p>
-                    <p className="price">${product.price}</p>
-                    <p className="stock">Stock: {product.stock}</p>
-                    <div className="product-actions">
-                      <Link to={`/products/${product.id}`} className="btn btn-secondary">
+                <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                  <div className="aspect-square overflow-hidden">
+                    <img 
+                      src={product.thumbnail} 
+                      alt={product.title} 
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
+                      {product.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-2">{product.brand}</p>
+                    <p className="text-2xl font-bold text-green-600 mb-2">${product.price}</p>
+                    <p className="text-gray-500 text-sm mb-4">
+                      Stock: <span className={product.stock > 0 ? 'text-green-600' : 'text-red-600'}>
+                        {product.stock}
+                      </span>
+                    </p>
+                    <div className="space-y-2">
+                      <Link 
+                        to={`/products/${product.id}`} 
+                        className="w-full bg-gray-100 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors font-medium text-center block"
+                      >
                         View Details
                       </Link>
                       <button 
                         onClick={() => handleAddToCart(product)}
-                        className="btn btn-primary"
+                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-300 disabled:cursor-not-allowed"
                         disabled={product.stock === 0}
                       >
-                        Add to Cart
+                        {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                       </button>
                     </div>
                   </div>
