@@ -1,5 +1,5 @@
 class ApiService {
-    constructor(baseURL = 'https://dummyjson.com') {
+    constructor(baseURL = 'http://localhost:5000/api') {
         this.baseURL = baseURL;
         this.headers = {
             'Content-Type': 'application/json',

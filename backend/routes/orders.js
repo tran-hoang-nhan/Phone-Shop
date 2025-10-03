@@ -1,6 +1,6 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const Order = require('../models/Order');
-const Product = require('../models/Product');
 const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
@@ -27,22 +27,7 @@ const createOrder = async (req, res) => {
       });
     }
 
-    // Verify products exist and have enough stock
-    for (let item of orderItems) {
-      const product = await Product.findById(item.product);
-      if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: `Không tìm thấy sản phẩm ${item.name}`
-        });
-      }
-      if (product.stock < item.quantity) {
-        return res.status(400).json({
-          success: false,
-          message: `Sản phẩm ${product.name} không đủ hàng. Còn lại: ${product.stock}`
-        });
-      }
-    }
+    // Chỉ lưu thông tin sản phẩm, không verify
 
     const order = await Order.create({
       user: req.user.id,
@@ -55,12 +40,7 @@ const createOrder = async (req, res) => {
       totalPrice
     });
 
-    // Update product stock
-    for (let item of orderItems) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: -item.quantity }
-      });
-    }
+    // Không cập nhật stock vì dùng DummyJSON
 
     res.status(201).json({
       success: true,
@@ -79,9 +59,16 @@ const createOrder = async (req, res) => {
 // @access  Private
 const getOrderById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'ID đơn hàng không hợp lệ'
+      });
+    }
+
     const order = await Order.findById(req.params.id)
-      .populate('user', 'name email')
-      .populate('orderItems.product', 'name images');
+      .populate('user', 'name email');
+      // Bỏ populate product vì dùng DummyJSON
 
     if (!order) {
       return res.status(404).json({
@@ -116,8 +103,8 @@ const getOrderById = async (req, res) => {
 const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user.id })
-      .populate('orderItems.product', 'name images')
       .sort('-createdAt');
+      // Bỏ populate product vì dùng DummyJSON
 
     res.status(200).json({
       success: true,
@@ -139,8 +126,8 @@ const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find({})
       .populate('user', 'name email')
-      .populate('orderItems.product', 'name images')
       .sort('-createdAt');
+      // Bỏ populate product vì dùng DummyJSON
 
     res.status(200).json({
       success: true,
@@ -160,6 +147,13 @@ const getAllOrders = async (req, res) => {
 // @access  Private
 const updateOrderToPaid = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'ID đơn hàng không hợp lệ'
+      });
+    }
+
     const order = await Order.findById(req.params.id);
 
     if (!order) {
@@ -198,6 +192,13 @@ const updateOrderToPaid = async (req, res) => {
 // @access  Private/Admin
 const updateOrderToDelivered = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'ID đơn hàng không hợp lệ'
+      });
+    }
+
     const order = await Order.findById(req.params.id);
 
     if (!order) {
@@ -230,6 +231,13 @@ const updateOrderToDelivered = async (req, res) => {
 // @access  Private/Admin
 const updateOrderStatus = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'ID đơn hàng không hợp lệ'
+      });
+    }
+
     const order = await Order.findById(req.params.id);
 
     if (!order) {
@@ -241,14 +249,7 @@ const updateOrderStatus = async (req, res) => {
 
     order.status = req.body.status;
 
-    if (req.body.status === 'cancelled') {
-      // Restore product stock if order is cancelled
-      for (let item of order.orderItems) {
-        await Product.findByIdAndUpdate(item.product, {
-          $inc: { stock: item.quantity }
-        });
-      }
-    }
+    // Không cập nhật stock vì dùng DummyJSON
 
     const updatedOrder = await order.save();
 

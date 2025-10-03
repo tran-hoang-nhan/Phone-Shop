@@ -10,8 +10,13 @@ const Cart = () => {
     if (state.products.length === 0) {
       actions.loadProducts();
     }
+    // Clear old localStorage cart data
+    localStorage.removeItem('cart');
     actions.loadCart();
   }, [actions, state.products.length]);
+
+  // Debug: Log cart state
+  console.log('🛒 Cart state:', state.cart);
 
   const getProductById = (productId) => {
     return state.products.find(p => p.id === productId);

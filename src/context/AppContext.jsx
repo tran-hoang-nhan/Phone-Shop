@@ -2,6 +2,7 @@ import { useReducer, useEffect } from 'react';
 import { CartModel } from '../models/Cart';
 import { AppContext } from './AppContext';
 import { productService } from '../services/productService';
+import { cartService } from '../services/cartService';
 
 const initialState = {
   products: [],
@@ -64,29 +65,64 @@ export function AppProvider({ children }) {
     
     loadProducts: () => loadProducts(dispatch),
     
-    loadCart: () => {
-      const cart = cartModel.getCart();
-      dispatch({ type: 'SET_CART', payload: cart });
+    loadCart: async () => {
+      try {
+        const response = await cartService.getCart();
+        dispatch({ type: 'SET_CART', payload: response.data?.items || [] });
+      } catch (error) {
+        console.error('Error loading cart:', error);
+        // Fallback to localStorage
+        const cart = cartModel.getCart();
+        dispatch({ type: 'SET_CART', payload: cart });
+      }
     },
     
-    addToCart: (productId, quantity, price) => {
-      const cart = cartModel.addToCart(productId, quantity, price);
-      dispatch({ type: 'ADD_TO_CART', payload: cart });
+    addToCart: async (product, name, price, image, quantity = 1) => {
+      try {
+        const response = await cartService.addToCart(product, name, price, image, quantity);
+        dispatch({ type: 'ADD_TO_CART', payload: response.data?.items || [] });
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        // Fallback to localStorage
+        const cart = cartModel.addToCart(product, quantity, price);
+        dispatch({ type: 'ADD_TO_CART', payload: cart });
+      }
     },
     
-    removeFromCart: (productId) => {
-      const cart = cartModel.removeFromCart(productId);
-      dispatch({ type: 'REMOVE_FROM_CART', payload: cart });
+    removeFromCart: async (productId) => {
+      try {
+        const response = await cartService.removeFromCart(productId);
+        dispatch({ type: 'REMOVE_FROM_CART', payload: response.data?.items || [] });
+      } catch (error) {
+        console.error('Error removing from cart:', error);
+        // Fallback to localStorage
+        const cart = cartModel.removeFromCart(productId);
+        dispatch({ type: 'REMOVE_FROM_CART', payload: cart });
+      }
     },
     
-    updateCartQuantity: (productId, quantity) => {
-      const cart = cartModel.updateQuantity(productId, quantity);
-      dispatch({ type: 'SET_CART', payload: cart });
+    updateCartQuantity: async (productId, quantity) => {
+      try {
+        const response = await cartService.updateCartItem(productId, quantity);
+        dispatch({ type: 'SET_CART', payload: response.data?.items || [] });
+      } catch (error) {
+        console.error('Error updating cart:', error);
+        // Fallback to localStorage
+        const cart = cartModel.updateQuantity(productId, quantity);
+        dispatch({ type: 'SET_CART', payload: cart });
+      }
     },
     
-    clearCart: () => {
-      cartModel.clearCart();
-      dispatch({ type: 'CLEAR_CART' });
+    clearCart: async () => {
+      try {
+        await cartService.clearCart();
+        dispatch({ type: 'CLEAR_CART' });
+      } catch (error) {
+        console.error('Error clearing cart:', error);
+        // Fallback to localStorage
+        cartModel.clearCart();
+        dispatch({ type: 'CLEAR_CART' });
+      }
     }
   };
 

@@ -8,8 +8,7 @@ const OrderSchema = new mongoose.Schema({
   },
   orderItems: [{
     product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
+      type: String, // Chấp nhận cả ObjectId và DummyJSON ID
       required: true
     },
     name: {

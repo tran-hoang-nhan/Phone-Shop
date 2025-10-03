@@ -1,76 +1,83 @@
 const mongoose = require('mongoose');
 
 const ProductSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Vui lòng nhập tên sản phẩm'],
-    maxlength: [200, 'Tên sản phẩm không được quá 200 ký tự']
-  },
-  brand: {
-    type: String,
-    required: [true, 'Vui lòng nhập thương hiệu'],
-    enum: ['Apple', 'Samsung', 'Xiaomi', 'Oppo', 'Vivo', 'Realme', 'Other']
-  },
-  category: {
-    type: String,
-    required: [true, 'Vui lòng chọn danh mục'],
-    enum: ['Smartphone', 'Accessory', 'Tablet', 'Smartwatch']
-  },
-  price: {
+  id: {
     type: Number,
-    required: [true, 'Vui lòng nhập giá sản phẩm'],
-    min: [0, 'Giá không được âm']
+    unique: true
+  },
+  title: {
+    type: String,
+    required: true
   },
   description: {
     type: String,
-    required: [true, 'Vui lòng nhập mô tả sản phẩm']
+    required: true
   },
-  specifications: {
-    screen: String,
-    os: String,
-    camera: String,
-    chip: String,
-    ram: String,
-    storage: String,
-    battery: String,
-    weight: String
+  category: {
+    type: String,
+    required: true
   },
-  images: [{
-    type: String
-  }],
-  stock: {
+  price: {
     type: Number,
-    required: [true, 'Vui lòng nhập số lượng tồn kho'],
-    min: [0, 'Số lượng không được âm'],
+    required: true
+  },
+  discountPercentage: {
+    type: Number,
     default: 0
   },
   rating: {
     type: Number,
-    min: [0, 'Rating phải từ 0-5'],
-    max: [5, 'Rating phải từ 0-5'],
     default: 0
   },
-  numReviews: {
+  stock: {
     type: Number,
     default: 0
   },
-  isActive: {
-    type: Boolean,
-    default: true
+  tags: [String],
+  brand: String,
+  sku: String,
+  weight: Number,
+  dimensions: {
+    width: Number,
+    height: Number,
+    depth: Number
   },
+  warrantyInformation: String,
+  shippingInformation: String,
+  availabilityStatus: String,
+  reviews: [{
+    rating: Number,
+    comment: String,
+    date: Date,
+    reviewerName: String,
+    reviewerEmail: String
+  }],
+  returnPolicy: String,
+  minimumOrderQuantity: {
+    type: Number,
+    default: 1
+  },
+  meta: {
+    createdAt: Date,
+    updatedAt: Date,
+    barcode: String,
+    qrCode: String
+  },
+  images: [String],
+  thumbnail: String,
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: 'User'
   }
 }, {
   timestamps: true
 });
 
 // Indexes for better search performance
-ProductSchema.index({ name: 'text', brand: 'text', description: 'text' });
+ProductSchema.index({ title: 'text', brand: 'text', description: 'text' });
 ProductSchema.index({ brand: 1, category: 1 });
 ProductSchema.index({ price: 1 });
 ProductSchema.index({ rating: -1 });
+ProductSchema.index({ id: 1 });
 
 module.exports = mongoose.model('Product', ProductSchema);

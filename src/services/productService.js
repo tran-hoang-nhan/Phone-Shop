@@ -3,8 +3,8 @@ import { apiService } from './api';
 export class ProductService {
   async getProducts() {
     console.log('🔌 ProductService: Fetching products from API...');
-    const response = await apiService.get('/products/category/smartphones');
-    return response.products || response;
+    const response = await apiService.get('/products');
+    return response.data || response;
   }
 
   async getProductById(id) {

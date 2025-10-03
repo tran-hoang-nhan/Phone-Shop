@@ -1,4 +1,6 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const axios = require('axios');
 const Product = require('../models/Product');
 const Review = require('../models/Review');
 const Order = require('../models/Order');
@@ -93,19 +95,36 @@ const getProducts = async (req, res) => {
 // @access  Public
 const getProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate('createdBy', 'name email');
+    // Check if ID is valid ObjectId (MongoDB product)
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      const product = await Product.findById(req.params.id).populate('createdBy', 'name email');
+      
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: 'Không tìm thấy sản phẩm'
+        });
+      }
 
-    if (!product) {
+      return res.status(200).json({
+        success: true,
+        data: product
+      });
+    }
+
+    // If not ObjectId, try DummyJSON API
+    try {
+      const response = await axios.get(`https://dummyjson.com/products/${req.params.id}`);
+      return res.status(200).json({
+        success: true,
+        data: response.data
+      });
+    } catch (dummyError) {
       return res.status(404).json({
         success: false,
         message: 'Không tìm thấy sản phẩm'
       });
     }
-
-    res.status(200).json({
-      success: true,
-      data: product
-    });
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -141,6 +160,13 @@ const createProduct = async (req, res) => {
 // @access  Private/Admin
 const updateProduct = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'ID sản phẩm không hợp lệ'
+      });
+    }
+
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true
@@ -170,6 +196,13 @@ const updateProduct = async (req, res) => {
 // @access  Private/Admin
 const deleteProduct = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'ID sản phẩm không hợp lệ'
+      });
+    }
+
     const product = await Product.findByIdAndDelete(req.params.id);
 
     if (!product) {
@@ -219,6 +252,13 @@ const getProductReviews = async (req, res) => {
 // @access  Private
 const createReview = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'ID sản phẩm không hợp lệ'
+      });
+    }
+
     const { rating, title, comment } = req.body;
     const product = await Product.findById(req.params.id);
 
