@@ -1,12 +1,23 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useApp } from '../hooks/useApp';
-import Header from '../components/Header';
+// Header is provided by Layout
 
 const Products = () => {
   const { state, actions } = useApp();
+  const location = useLocation();
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Get search query from URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const search = params.get('search');
+    if (search) {
+      setSearchTerm(search);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     if (state.products.length === 0) {
@@ -15,12 +26,26 @@ const Products = () => {
   }, [actions, state.products.length]);
 
   useEffect(() => {
-    if (selectedCategory === 'all') {
-      setFilteredProducts(state.products);
-    } else {
-      setFilteredProducts(state.products.filter(p => p.brand === selectedCategory));
+    let filtered = state.products;
+
+    // Filter by category
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(p => p.brand === selectedCategory);
     }
-  }, [state.products, selectedCategory]);
+
+    // Filter by search term
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(p => 
+        p.title?.toLowerCase().includes(term) ||
+        p.name?.toLowerCase().includes(term) ||
+        p.brand?.toLowerCase().includes(term) ||
+        p.description?.toLowerCase().includes(term)
+      );
+    }
+
+    setFilteredProducts(filtered);
+  }, [state.products, selectedCategory, searchTerm]);
 
   const categories = ['all', ...new Set(state.products.map(p => p.brand))];
 
@@ -31,7 +56,7 @@ const Products = () => {
   if (state.loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
+  {/* Header is rendered by Layout */}
         <main className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -44,22 +69,45 @@ const Products = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+  {/* Header is rendered by Layout */}
       
       <main>
         <section className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Products</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              {searchTerm ? `Kết quả tìm kiếm: "${searchTerm}"` : 'Products'}
+            </h1>
             <nav className="text-sm text-gray-600">
               <Link to="/" className="text-blue-600 hover:text-blue-800">Home</Link> 
-              <span className="mx-2">></span> 
+                <span className="mx-2">&gt;</span>
               <span>Products</span>
             </nav>
+            {searchTerm && (
+              <div className="mt-4">
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    window.history.pushState({}, '', '/products');
+                  }}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  ← Xóa bộ lọc
+                </button>
+              </div>
+            )}
           </div>
         </section>
 
         <section className="py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {searchTerm && (
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-blue-800">
+                  🔍 Tìm thấy <span className="font-bold">{filteredProducts.length}</span> sản phẩm cho "{searchTerm}"
+                </p>
+              </div>
+            )}
+            
             <div className="mb-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Categories</h3>
               <div className="flex flex-wrap gap-2">

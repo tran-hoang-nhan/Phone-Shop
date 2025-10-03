@@ -11,6 +11,8 @@ const initialState = {
   error: null
 };
 
+const cartModel = new CartModel();
+
 function appReducer(state, action) {
   console.log('🔄 Reducer action:', action.type, action.payload?.length || action.payload);
   
@@ -35,40 +37,32 @@ function appReducer(state, action) {
   }
 }
 
+const loadProducts = async (dispatch) => {
+  try {
+    console.log('🔄 Loading products from API...');
+    dispatch({ type: 'SET_LOADING', payload: true });
+    
+    const products = await productService.getProducts();
+    console.log('📦 Products loaded from API:', products.length, 'items');
+    
+    dispatch({ type: 'SET_PRODUCTS', payload: products });
+    console.log('✅ Products dispatched to state');
+  } catch (error) {
+    console.error('❌ Error loading products from API:', error);
+    dispatch({ type: 'SET_ERROR', payload: error.message });
+  } finally {
+    dispatch({ type: 'SET_LOADING', payload: false });
+  }
+};
+
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
-  const cartModel = new CartModel();
-
-
-
-  const loadProducts = async () => {
-    try {
-      console.log('🔄 Loading products from API...');
-      dispatch({ type: 'SET_LOADING', payload: true });
-      
-      const products = await productService.getProducts();
-      console.log('📦 Products loaded from API:', products.length, 'items');
-      
-      dispatch({ type: 'SET_PRODUCTS', payload: products });
-      console.log('✅ Products dispatched to state');
-    } catch (error) {
-      console.error('❌ Error loading products from API:', error);
-      dispatch({ type: 'SET_ERROR', payload: error.message });
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: false });
-    }
-  };
-
-  // Auto-load products on mount
-  useEffect(() => {
-    loadProducts();
-  }, []);
 
   const actions = {
     setLoading: (loading) => dispatch({ type: 'SET_LOADING', payload: loading }),
     setError: (error) => dispatch({ type: 'SET_ERROR', payload: error }),
     
-    loadProducts,
+    loadProducts: () => loadProducts(dispatch),
     
     loadCart: () => {
       const cart = cartModel.getCart();
@@ -95,6 +89,11 @@ export function AppProvider({ children }) {
       dispatch({ type: 'CLEAR_CART' });
     }
   };
+
+  // Auto-load products on mount - only once
+  useEffect(() => {
+    loadProducts(dispatch);
+  }, []);
 
   return (
     <AppContext.Provider value={{ state, actions }}>

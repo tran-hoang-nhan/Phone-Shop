@@ -1,24 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../hooks/useApp';
-import Header from '../components/Header';
+// Header is provided by Layout, remove local import
 
 const Home = () => {
   const { state, actions } = useApp();
 
   useEffect(() => {
-    if (state.products.length === 0) {
-      actions.loadProducts();
-    }
     actions.loadCart();
-  }, [actions, state.products.length]);
+    // eslint-disable-next-line
+  }, []);
 
-  const featuredProducts = state.products.slice(0, 4);
+  const featuredProducts = useMemo(() => state.products.slice(0, 4), [state.products]);
 
   if (state.loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
+  {/* Header is rendered by Layout */}
         <main className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -31,7 +29,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+  {/* Header is rendered by Layout */}
       
       <main>
         <section className="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-20">
