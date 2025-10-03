@@ -1,171 +1,368 @@
-# Phone Shop - React E-commerce Application
+# 📱 Phone Shop - E-Commerce Platform
 
-A modern e-commerce application built with React, Vite, and React Router for selling smartphones and accessories.
+![React](https://img.shields.io/badge/React-19.1.1-blue)
+![Node.js](https://img.shields.io/badge/Node.js-Express-green)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen)
+![Vite](https://img.shields.io/badge/Vite-7.1.7-purple)
 
-## Features
+Nền tảng thương mại điện tử bán điện thoại di động hiện đại với giao diện đẹp mắt, tính năng đầy đủ và hiệu suất cao.
 
-- 🏠 **Home Page** - Hero section with featured products
-- 📱 **Products Page** - Browse all products with category filtering
-- 🔍 **Product Details** - Detailed product information with specifications
-- 🛒 **Shopping Cart** - Add, remove, and manage cart items
-- 📱 **Responsive Design** - Mobile-friendly interface
-- 💾 **Local Storage** - Persistent cart and product data
+## ✨ Tính năng chính
 
-## Tech Stack
+### 👥 Người dùng
+- ✅ Đăng ký/Đăng nhập tài khoản
+- ✅ Quên mật khẩu & Reset password qua email
+- ✅ Xem danh sách sản phẩm với bộ lọc và tìm kiếm
+- ✅ Chi tiết sản phẩm với gallery ảnh & thông số kỹ thuật
+- ✅ Giỏ hàng với cập nhật số lượng
+- ✅ Thanh toán đơn hàng
+- ✅ Xem lịch sử đơn hàng
+- ✅ Quản lý thông tin cá nhân
+- ✅ Đánh giá sản phẩm (UI)
 
-- **React 19** - UI library
-- **Vite** - Build tool and dev server
-- **React Router DOM** - Client-side routing
+### 👑 Admin
+- ✅ Dashboard với thống kê chi tiết
+- ✅ Quản lý sản phẩm (CRUD)
+- ✅ Quản lý đơn hàng & cập nhật trạng thái
+- ✅ Thống kê doanh thu theo tháng
+- ✅ Cảnh báo tồn kho thấp
+- ✅ Phân tích thương hiệu
+
+### 🎨 Giao diện
+- ✅ Responsive design (Mobile, Tablet, Desktop)
+- ✅ Modern UI với Glassmorphism
+- ✅ Gradient backgrounds & animations
+- ✅ Loading states & error handling
+- ✅ Toast notifications
+
+## 🛠️ Công nghệ sử dụng
+
+### Frontend
+- **React 19.1.1** - UI Library
+- **Vite 7.1.7** - Build tool & Dev server
+- **React Router DOM** - Routing
+- **Axios** - HTTP client
 - **Context API** - State management
-- **CSS3** - Styling with responsive design
-- **Local Storage** - Data persistence
+- **CSS3** - Styling (Tailwind-inspired)
 
-## Project Structure
+### Backend
+- **Node.js** - Runtime environment
+- **Express 4.21.2** - Web framework
+- **MongoDB** - NoSQL Database
+- **Mongoose** - ODM
+- **JWT** - Authentication
+- **Bcrypt** - Password hashing
+- **Nodemailer** - Email service
 
-```
-src/
-├── components/          # Reusable components
-│   ├── Header.jsx      # Navigation header
-│   ├── ProductDetail.jsx # Product detail page
-│   └── ProductDetail.css # Product detail styles
-├── context/            # React Context
-│   ├── AppContext.js   # Context definition
-│   └── AppContext.jsx  # Context provider
-├── hooks/              # Custom hooks
-│   └── useApp.js       # App context hook
-├── models/             # Data models
-│   ├── Product.js      # Product model and data
-│   ├── Cart.js         # Cart model and operations
-│   └── Payment.js      # Payment model
-├── pages/              # Page components
-│   ├── Home.jsx        # Home page
-│   ├── Products.jsx    # Products listing
-│   └── Cart.jsx        # Shopping cart
-├── services/           # API services (future)
-├── utils/              # Utility functions
-├── App.jsx             # Main app component
-├── App.css             # Global styles
-├── index.css           # Base styles
-└── main.jsx            # App entry point
-```
+## 📦 Cài đặt
 
-## Getting Started
+### Yêu cầu hệ thống
+- Node.js >= 16.x
+- MongoDB >= 5.x
+- npm hoặc yarn
 
-### Prerequisites
-
-- Node.js (version 16 or higher)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
+### 1. Clone repository
 ```bash
-git clone <repository-url>
-cd Phone-Shope
+git clone https://github.com/tran-hoang-nhan/Phone-Shop.git
+cd Phone-Shop
 ```
 
-2. Install dependencies:
+### 2. Cài đặt Backend
 ```bash
+cd backend
 npm install
 ```
 
-3. Start the development server:
-```bash
-npm run dev
+### 3. Cấu hình Backend
+Tạo file `.env` trong thư mục `backend`:
+```env
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/phoneShop
+JWT_SECRET=your_jwt_secret_key_here
+JWT_EXPIRE=7d
+
+# Email Configuration (for password reset)
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+EMAIL_FROM=Phone Shop <noreply@phoneShop.com>
+
+# Frontend URL
+CLIENT_URL=http://localhost:5173
 ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+### 4. Cài đặt Frontend
+```bash
+cd ../
+npm install
+```
 
-### Available Scripts
+### 5. Khởi chạy MongoDB
+```bash
+# Windows
+mongod
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
+# macOS/Linux
+sudo systemctl start mongodb
+```
 
-## Features Overview
+### 6. Tạo tài khoản Admin
+```bash
+cd backend
+node createAdmin.js
+```
 
-### Home Page
-- Hero section with call-to-action
-- Featured products grid
-- Navigation to products page
+**Thông tin đăng nhập Admin:**
+- Email: `admin@thnstore.com`
+- Password: `admin123`
 
-### Products Page
-- Display all available products
-- Category filtering (Smartphone, Accessory)
-- Add to cart functionality
-- Product details navigation
+### 7. Chạy ứng dụng
 
-### Product Details
-- Detailed product information
-- Product specifications table
-- Quantity selector
-- Add to cart with custom quantity
-- Tabbed interface (Specifications, Reviews, Shipping)
+**Backend:**
+```bash
+cd backend
+npm start
+```
+Server chạy tại: http://localhost:5000
 
-### Shopping Cart
-- View cart items
-- Update quantities
-- Remove items
-- Order summary with totals
-- Persistent cart data
+**Frontend:**
+```bash
+cd ../
+npm run dev
+```
+Ứng dụng chạy tại: http://localhost:5173
 
-### Responsive Design
-- Mobile-first approach
-- Flexible grid layouts
-- Touch-friendly interface
-- Optimized for all screen sizes
+## 📂 Cấu trúc thư mục
 
-## Data Management
+```
+Phone-Shop/
+├── backend/
+│   ├── config/
+│   │   └── db.js                 # MongoDB connection
+│   ├── models/
+│   │   ├── User.js               # User schema
+│   │   ├── Product.js            # Product schema
+│   │   └── Order.js              # Order schema
+│   ├── routes/
+│   │   ├── authRoutes.js         # Authentication routes
+│   │   ├── productRoutes.js      # Product routes
+│   │   └── orderRoutes.js        # Order routes
+│   ├── middleware/
+│   │   ├── authMiddleware.js     # JWT verification
+│   │   └── adminMiddleware.js    # Admin role check
+│   ├── utils/
+│   │   └── sendEmail.js          # Email utility
+│   ├── createAdmin.js            # Admin creation script
+│   ├── server.js                 # Express server
+│   └── package.json
+│
+├── src/
+│   ├── components/
+│   │   ├── Header.jsx            # Navigation header
+│   │   ├── Footer.jsx            # Site footer
+│   │   ├── Layout.jsx            # Main layout wrapper
+│   │   ├── ProductCard.jsx       # Product card component
+│   │   ├── ProductDetail.jsx     # Product detail page
+│   │   └── ProtectedRoute.jsx    # Route protection
+│   ├── pages/
+│   │   ├── Home.jsx              # Homepage
+│   │   ├── Products.jsx          # Product listing
+│   │   ├── Cart.jsx              # Shopping cart
+│   │   ├── Checkout.jsx          # Checkout page
+│   │   ├── Profile.jsx           # User profile
+│   │   ├── Orders.jsx            # Order history
+│   │   ├── Admin.jsx             # Admin dashboard
+│   │   ├── About.jsx             # About us page
+│   │   ├── Contact.jsx           # Contact page
+│   │   ├── Login.jsx             # Login page
+│   │   ├── Register.jsx          # Registration page
+│   │   ├── ForgotPassword.jsx    # Forgot password
+│   │   └── ResetPassword.jsx     # Reset password
+│   ├── contexts/
+│   │   ├── AuthContext.jsx       # Authentication context
+│   │   └── AppContext.jsx        # Global app state
+│   ├── services/
+│   │   ├── authService.js        # Auth API calls
+│   │   ├── productService.js     # Product API calls
+│   │   └── orderService.js       # Order API calls
+│   ├── models/
+│   │   └── CartModel.js          # Cart business logic
+│   ├── App.jsx                   # Main app component
+│   ├── main.jsx                  # Entry point
+│   └── index.css                 # Global styles
+│
+├── public/                       # Static assets
+├── .gitignore
+├── package.json
+├── vite.config.js
+└── README.md
+```
+
+## 🔐 API Endpoints
+
+### Authentication
+```
+POST   /api/auth/register        # Đăng ký tài khoản mới
+POST   /api/auth/login           # Đăng nhập
+GET    /api/auth/me              # Lấy thông tin user hiện tại
+PUT    /api/auth/updateprofile   # Cập nhật thông tin
+POST   /api/auth/forgotpassword  # Gửi email reset password
+PUT    /api/auth/resetpassword/:resettoken  # Reset password
+```
 
 ### Products
-- Stored in localStorage
-- Default products loaded on first visit
-- Product model with specifications
-- Category-based organization
+```
+GET    /api/products             # Lấy danh sách sản phẩm
+GET    /api/products/:id         # Chi tiết sản phẩm
+POST   /api/products             # Tạo sản phẩm (Admin)
+PUT    /api/products/:id         # Cập nhật sản phẩm (Admin)
+DELETE /api/products/:id         # Xóa sản phẩm (Admin)
+```
 
-### Cart
-- Persistent cart using localStorage
-- Add/remove/update operations
-- Automatic total calculations
-- Cross-session persistence
+### Orders
+```
+GET    /api/orders               # Lấy đơn hàng (User: của mình, Admin: tất cả)
+GET    /api/orders/:id           # Chi tiết đơn hàng
+POST   /api/orders               # Tạo đơn hàng mới
+PUT    /api/orders/:id/status    # Cập nhật trạng thái (Admin)
+PUT    /api/orders/:id/pay       # Cập nhật thanh toán
+```
 
-## Styling
+## 👤 Vai trò người dùng
 
-- CSS3 with modern features
-- Flexbox and Grid layouts
-- CSS custom properties
-- Responsive breakpoints
-- Consistent design system
+### User (Khách hàng)
+- Xem và mua sản phẩm
+- Quản lý giỏ hàng
+- Theo dõi đơn hàng
+- Cập nhật thông tin cá nhân
 
-## Browser Support
+### Admin (Quản trị viên)
+- Tất cả quyền của User
+- Quản lý sản phẩm
+- Quản lý đơn hàng
+- Xem thống kê hệ thống
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
+## 📊 Thống kê Admin
 
-## Contributing
+Dashboard Admin cung cấp:
+- 💰 **Doanh thu**: Tổng, theo tháng, giá trị đơn trung bình
+- 📦 **Đơn hàng**: Tổng số, chờ xử lý, hoàn thành, hôm nay
+- 📱 **Kho hàng**: Tổng sản phẩm, hết hàng, tồn kho thấp
+- 🏆 **Phân tích**: Thương hiệu hàng đầu, xu hướng bán hàng
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+## 🎯 Tính năng nổi bật
 
-## License
+### 1. Hiệu suất cao
+- ⚡ React useMemo & useCallback optimization
+- 🔄 Lazy loading cho images
+- 📦 Code splitting với React.lazy
+- 🚀 Fast refresh với Vite
 
-This project is licensed under the MIT License.
+### 2. Bảo mật
+- 🔐 JWT authentication với httpOnly cookies
+- 🔒 Password hashing với bcrypt
+- 🛡️ Protected routes
+- ✅ Input validation
+- 🚫 XSS protection
 
-## Future Enhancements
+### 3. Trải nghiệm người dùng
+- 📱 Mobile-first responsive design
+- 🎨 Modern UI/UX với animations
+- ⚡ Real-time cart updates
+- 🔔 Toast notifications
+- 💾 LocalStorage persistence
 
-- [ ] User authentication
-- [ ] Payment integration
-- [ ] Product search functionality
-- [ ] Product reviews and ratings
-- [ ] Wishlist feature
-- [ ] Order history
-- [ ] Admin panel
-- [ ] API integration
-- [ ] Unit tests
-- [ ] Performance optimization
+## 🚀 Deployment
+
+### Backend (Node.js)
+Có thể deploy trên:
+- Heroku
+- Render
+- Railway
+- DigitalOcean
+- AWS EC2
+
+### Frontend (React)
+Có thể deploy trên:
+- Vercel (Recommended)
+- Netlify
+- GitHub Pages
+- AWS S3 + CloudFront
+
+### Database (MongoDB)
+- MongoDB Atlas (Cloud)
+- Self-hosted MongoDB
+
+## 🐛 Xử lý lỗi thường gặp
+
+### 1. Port 5000 đã được sử dụng
+```bash
+# Windows PowerShell
+$processId = (Get-NetTCPConnection -LocalPort 5000).OwningProcess
+Stop-Process -Id $processId -Force
+
+# macOS/Linux
+lsof -ti:5000 | xargs kill -9
+```
+
+### 2. MongoDB connection failed
+- Kiểm tra MongoDB đang chạy: `mongod --version`
+- Kiểm tra connection string trong `.env`
+- Restart MongoDB service
+
+### 3. CORS errors
+- Kiểm tra `CLIENT_URL` trong backend `.env`
+- Đảm bảo cors middleware được cấu hình đúng
+
+## 📝 Scripts
+
+### Backend
+```bash
+npm start          # Chạy server
+npm run dev        # Chạy với nodemon (auto-restart)
+node createAdmin.js # Tạo admin user
+```
+
+### Frontend
+```bash
+npm run dev        # Development server
+npm run build      # Production build
+npm run preview    # Preview production build
+npm run lint       # Run ESLint
+```
+
+## 🤝 Đóng góp
+
+Mọi đóng góp đều được chào đón! Vui lòng:
+1. Fork repository
+2. Tạo branch mới (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Mở Pull Request
+
+## 📄 License
+
+Dự án này được phân phối dưới giấy phép MIT. Xem file `LICENSE` để biết thêm chi tiết.
+
+## 👨‍💻 Tác giả
+
+**Tran Hoang Nhan**
+- GitHub: [@tran-hoang-nhan](https://github.com/tran-hoang-nhan)
+
+## 🙏 Cảm ơn
+
+Cảm ơn các thư viện và framework đã sử dụng trong dự án:
+- React Team
+- Express.js
+- MongoDB
+- Vite
+- và nhiều thư viện mã nguồn mở khác
+
+## 📞 Liên hệ
+
+Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ:
+- Email: admin@thnstore.com
+- GitHub Issues: [Create an issue](https://github.com/tran-hoang-nhan/Phone-Shop/issues)
+
+---
+
+⭐ Nếu bạn thấy dự án này hữu ích, hãy cho một star nhé! ⭐
