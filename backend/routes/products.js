@@ -119,7 +119,7 @@ const getProduct = async (req, res) => {
         success: true,
         data: response.data
       });
-    } catch (dummyError) {
+    } catch {
       return res.status(404).json({
         success: false,
         message: 'Không tìm thấy sản phẩm'

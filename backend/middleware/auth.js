@@ -27,7 +27,7 @@ const protect = async (req, res, next) => {
     req.user = await User.findById(decoded.id);
 
     next();
-  } catch (error) {
+  } catch {
     return res.status(401).json({
       success: false,
       message: 'Không có quyền truy cập, token không hợp lệ'
